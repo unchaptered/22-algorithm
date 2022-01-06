@@ -13,6 +13,10 @@ import List.List;
  * 4. remove 메서드
  * 5. get, set, indexOf, contains 메서드
  * 6. size, isEmpty, clear 메서드
+ * 
+ * 부가목록
+ * 
+ *  1. clone, toArray, sort 메서드
  */
 public class SLinkedList<E> implements List<E> {
 	private Node<E> head;
@@ -243,5 +247,57 @@ public class SLinkedList<E> implements List<E> {
 		}
 		head=tail=null;
 		size=0;
+	}
+	
+	// 부가목록
+	// 1. clone, toArray, sort 메서드
+	public Object clone() throws CloneNotSupportedException {
+		@SuppressWarnings("unchecked")
+		SLinkedList<? super E> clone=(SLinkedList<? super E>) super.clone();
+
+		/*
+		 * super.clone() 은 얉은 복사가 된다.
+		 * 따라서 각 Node를 일단 끊고 처음부터 끝까지 현재 리스트의 데이터를 CLONE 리스트에 넣어주어야 한다.
+		 */
+		clone.head=null;
+		clone.tail=null;
+		clone.size=0;
+		
+		for (Node<E> x=head; x!=null; x=x.next) {
+			clone.addLast(x.data);
+		}
+		
+		return clone;
+	}
+	
+	public Object[] toArray() {
+		Object[] array=new Object[size];
+		
+		int index=0;
+		for (Node<E> x=head; x!=null; x=x.next) {
+			array[index]=(E) x.data;
+			index++;
+		}
+		
+		return array;
+	}
+	
+	/* java.lang.reflect API
+	 * https://gyrfalcon.tistory.com/entry/Java-Reflection
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T[] toArray(T[] a) {
+		if (a.length < size) {
+			a=(T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
+		}
+		
+		int i=0;
+		
+		Object[] result=a;
+		for (Node<E> x=head; x!=null; x=x.next) {
+			result[i++]=x.data;
+		}
+		
+		return a;
 	}
 }
